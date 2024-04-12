@@ -20,7 +20,7 @@ namespace TestTask
                     date = date.AddDays(rand.Next(range));
                     date = date.AddSeconds(rand.Next(86400));
 
-                    sb.Append(rand.Next(200, 256).ToString() + ".");
+                    sb.Append(rand.Next(100, 256).ToString() + ".");
                     sb.Append(rand.Next(255, 256).ToString() + ".");
                     sb.Append(rand.Next(255, 256).ToString() + ".");
                     sb.Append(rand.Next(255, 256).ToString());

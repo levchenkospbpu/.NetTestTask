@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace TestTask
 {
@@ -13,7 +8,7 @@ namespace TestTask
         {
             var res = new Dictionary<string, uint>();
 
-            using (StreamReader sr = File.OpenText("Log.txt"))
+            using (StreamReader sr = File.OpenText(filePath))
             {
                 var iPValidator = new IPValidator();
                 var line = string.Empty;
@@ -21,19 +16,14 @@ namespace TestTask
                 {
                     var logLine = HandleLogLine(line);
 
-                    if (logLine.Value >= timeStart && logLine.Value <= timeEnd && iPValidator.ValidateIPv4Range(logLine.Key, ipAdressStart, (uint)ipAdressMask))
-                    {
+                    if (logLine.Value >= timeStart && logLine.Value <= timeEnd && iPValidator.ValidateIPv4(logLine.Key, ipAdressStart, (uint)ipAdressMask))
                         if (res.TryGetValue(logLine.Key, out var count))
-                        {
                             res[logLine.Key] = count + 1;
-                        }
                         else
-                        {
                             res.Add(logLine.Key, 1);
-                        }
-                    }
                 }
             }
+
             return res;
         }
 
@@ -43,13 +33,13 @@ namespace TestTask
 
             var match = regex.Match(line);
             if (!match.Success || match.Groups.Count != 3)
-                throw new FormatException("Invalid log file format");
+                throw new FormatException();
 
             var ipAddressStr = match.Groups[1].Value;
             var timestampStr = match.Groups[2].Value;
 
             if (!DateTime.TryParseExact(timestampStr, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out var timestamp))
-                throw new FormatException($"Invalid timestamp format: {timestampStr}");
+                throw new FormatException();
 
             return new KeyValuePair<string, DateTime>(ipAddressStr, timestamp);
         }
